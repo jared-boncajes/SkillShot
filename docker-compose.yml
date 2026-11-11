@@ -1,0 +1,10 @@
+services:
+  aimstrike:
+    build: .
+    ports:
+      - "2567:2567"
+    environment:
+      PORT: 2567
+      MIN_PLAYERS: 2
+      # ALLOWED_ORIGINS: https://your-frontend.example.com
+    restart: unless-stopped

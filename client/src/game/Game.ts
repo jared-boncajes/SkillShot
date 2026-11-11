@@ -39,7 +39,7 @@ interface Remote {
 }
 
 const MAX_PENDING = 90;
-const MAX_TICKS_PER_FRAME = 6;
+const MAX_TICKS_PER_FRAME = 10;
 const DEG = Math.PI / 180;
 
 /**
@@ -106,6 +106,7 @@ export class Game {
 
     this.renderer = new THREE.WebGLRenderer({ canvas, antialias: this.settings.quality !== 'low', powerPreference: 'high-performance' });
     this.renderer.autoClear = false;
+    this.renderer.info.autoReset = false;
     this.camera.rotation.order = 'YXZ';
     this.world = new World(this.scene, this.map);
     this.effects = new Effects(this.scene);
@@ -427,6 +428,7 @@ export class Game {
     const speed = Math.hypot(this.sim.vx, this.sim.vz);
     this.view.update(this.sim, dt, speed, this.frameDx, this.frameDy, this.settings.viewBob, this.alive);
 
+    this.renderer.info.reset();
     this.renderer.clear();
     this.renderer.render(this.scene, this.camera);
     if (this.alive) {
@@ -539,7 +541,7 @@ export class Game {
     return {
       x: this.sim.x, y: this.sim.y, z: this.sim.z, yaw: this.yaw, pitch: this.pitch,
       alive: this.alive, live: this.live, seq: this.seq, pending: this.pending.length,
-      weapon: this.sim.weapon, mag: this.sim.mags[this.sim.weapon],
+      weapon: this.sim.weapon, mag: this.sim.mags[this.sim.weapon], equip: this.sim.equip, hp: useStore.getState().hud.hp,
       remotes: [...this.remotes.values()].map((r) => ({ id: r.id, x: r.x, y: r.y, z: r.z, alive: r.alive, team: r.team })),
       drawCalls: this.renderer.info.render.calls, triangles: this.renderer.info.render.triangles,
     };

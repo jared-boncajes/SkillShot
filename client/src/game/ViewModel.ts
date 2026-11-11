@@ -2,7 +2,8 @@ import * as THREE from 'three';
 import { WEAPONS, type SimState } from '@aimstrike/shared';
 import { buildGun, disposeGun } from './GunModel';
 
-const BASE = new THREE.Vector3(0.17, -0.19, -0.36);
+const BASE = new THREE.Vector3(0.125, -0.125, -0.4);
+const SCALE = 0.62;
 
 /**
  * First-person weapon, drawn in its own scene with a fixed FOV on top of the
@@ -11,13 +12,13 @@ const BASE = new THREE.Vector3(0.17, -0.19, -0.36);
  */
 export class ViewModel {
   readonly scene = new THREE.Scene();
-  readonly camera = new THREE.PerspectiveCamera(58, 1, 0.01, 10);
+  readonly camera = new THREE.PerspectiveCamera(54, 1, 0.01, 10);
   private readonly holder = new THREE.Group();
   private readonly guns: THREE.Group[];
   private readonly flash: THREE.Mesh;
   private readonly flashMat: THREE.MeshBasicMaterial;
   private readonly flashGeo = new THREE.PlaneGeometry(0.22, 0.22);
-  private readonly sleeveMat = new THREE.MeshLambertMaterial({ color: 0x2a2f3a });
+  private readonly sleeveMat = new THREE.MeshLambertMaterial({ color: 0x39404d });
   private readonly gloveMat = new THREE.MeshLambertMaterial({ color: 0x15171c });
   private readonly boxGeo = new THREE.BoxGeometry(1, 1, 1);
   private current = -1;
@@ -33,10 +34,11 @@ export class ViewModel {
     const key = new THREE.DirectionalLight(0xfff0dd, 1.6);
     key.position.set(-1, 2, 1.5);
     this.scene.add(key);
+    this.holder.scale.setScalar(SCALE);
     this.scene.add(this.holder);
 
     this.guns = WEAPONS.map((w) => {
-      const g = buildGun(w);
+      const g = buildGun(w, true);
       g.visible = false;
       this.holder.add(g);
       return g;
@@ -44,12 +46,12 @@ export class ViewModel {
 
     // Simple forearm + glove so the weapon is visibly held.
     const sleeve = new THREE.Mesh(this.boxGeo, this.sleeveMat);
-    sleeve.scale.set(0.075, 0.075, 0.34);
-    sleeve.position.set(0.035, -0.09, 0.2);
-    sleeve.rotation.set(0.35, -0.12, 0);
+    sleeve.scale.set(0.07, 0.07, 0.3);
+    sleeve.position.set(0.05, -0.17, 0.2);
+    sleeve.rotation.set(0.5, -0.25, 0);
     const glove = new THREE.Mesh(this.boxGeo, this.gloveMat);
-    glove.scale.set(0.07, 0.085, 0.08);
-    glove.position.set(0.005, -0.03, 0.03);
+    glove.scale.set(0.065, 0.08, 0.07);
+    glove.position.set(0.004, -0.055, 0.035);
     this.holder.add(sleeve, glove);
 
     this.flashMat = new THREE.MeshBasicMaterial({ color: 0xffe6a8, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, depthTest: false });
@@ -65,7 +67,7 @@ export class ViewModel {
 
   /** Distance from the eye to the muzzle, for starting tracers at the barrel. */
   get muzzleDistance(): number {
-    return this.current >= 0 ? (this.guns[this.current].userData.muzzle as number) + 0.36 : 0.8;
+    return this.current >= 0 ? (this.guns[this.current].userData.muzzle as number) * SCALE + 0.42 : 0.8;
   }
 
   onShot(weapon: number): void {

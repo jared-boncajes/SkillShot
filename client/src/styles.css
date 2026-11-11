@@ -275,7 +275,7 @@ input[type='color'] { width: 44px; height: 30px; padding: 0; border: 1px solid v
 .sb-team th { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); font-weight: 600; padding: 9px 10px; text-align: right; }
 .sb-team th:first-child, .sb-team td:first-child { text-align: left; padding-left: 14px; }
 .sb-team.red th:first-child { color: var(--red); } .sb-team.blue th:first-child { color: var(--blue); }
-.sb-team td { padding: 8px 10px; text-align: right; border-top: 1px solid var(--line); }
+.sb-team td { padding: 8px 10px; text-align: right; border-top: 1px solid var(--line); color: var(--text); }
 .sb-team td:first-child { font-weight: 600; } .sb-team tr.me td { background: rgba(255,255,255,0.09); } .sb-team tr.offline td { opacity: 0.5; }
 .sb-team td.none { text-align: center; color: var(--muted); }
 .results h1 { font-size: 76px; font-weight: 800; letter-spacing: 0.14em; line-height: 1; }
